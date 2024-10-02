@@ -2,6 +2,9 @@
 // フォームに入力された情報を取得し、新しいユーザーをサーバーに登録する
 document.getElementById('userForm').addEventListener('submit', addUser);
 
+//// フォームの送信イベントを監視し、`searchUser` 関数を実行する
+document.getElementById('searchForm').addEventListener('submit', searchUser);
+
 // ユーザーを追加するための関数
 // `e` はイベントオブジェクトを表し、フォーム送信時のデフォルト動作を防止するために使用する
 function addUser(e) {
@@ -90,6 +93,31 @@ function deleteUser(id) {
         });
 }
 
+//ユーザーを検索する関数
+// `e` はイベントオブジェクトを表し、フォーム送信時のデフォルト動作を防止するために使用する
+function searchUser(e) {
+  // フォームのデフォルトの送信動作（ページのリロード）を防止
+  e.preventDefault();
+
+  // フォーム内の入力要素の値を取得
+  // ユーザーの名前またはメールアドレスを取得し、変数に格納
+  const data = document.getElementById('searchInput').value;       // ユーザー名またはメールアドレス
+
+  // `fetch` を使用して、サーバーからユーザー情報を検索する
+  // サーバーに `GET` リクエストを送信し、ユーザーリストを取得
+  fetch(`https://localhost:3000/api/users/search?query=${data}`)
+    .then(response => {
+      // サーバーから取得したユーザーリストを `searchUsers` 変数に格納
+      const searchUsers = response.data;
+
+      // HTML 内の検索結果表示用の要素を取得
+      const resultList = document.getElementById('resultList');
+
+      // 現在の検索結果表示をクリア（古いリストを消去）
+      resultList.innerHTML = '';
+
+    })
+}
 // ページが最初にロードされたときに `getUsers` 関数を実行し、初期状態でユーザーリストを表示する
 // ページ読み込み時にすべてのユーザー情報を取得して、表示を行う
 getUsers();
