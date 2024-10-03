@@ -82,6 +82,14 @@ const User = {
     const sql = `SELECT * FROM users WHERE name LIKE ? OR email LIKE ?`;
     const values = [`%${query}%`, `%${query}%`];
 
+    //クライアントが送信したクエリパラメータを取得
+    const query = req.query.query;
+    //query が空、または存在しない場合、400 ステータスコードとエラーメッセージを返す
+    //このバリデーションにより、誤ったリクエストや不正なアクセスからサーバーを守る役割がある
+      if (!query) {
+      return res.status(400).send({ error: '検索条件が必要です' });
+      }
+
     // データベースに対してクエリを実行
     db.query(sql, values, (err, results) => {
       // エラーが発生した場合、500 ステータスコードを返す
