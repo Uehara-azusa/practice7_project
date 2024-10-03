@@ -79,11 +79,12 @@ const User = {
   // `callback` 関数は、SQLクエリが完了した後に実行される
   search: (data, callback) => {
     //ユーザー名またはメールアドレスが部分一致するデータを取得する SQL クエリ
-    const query = `SELECT * FROM users WHERE name LIKE '%条件%' OR email LIKE '%条件%'`;
+    const sql = `SELECT * FROM users WHERE name LIKE ? OR email LIKE ?`;
+    const values = [`%${query}%`, `%${query}%`];
 
     // データベースに対してクエリを実行
     // `results` はクエリの実行結果（検索されたユーザーの配列）
-    db.query(query, [data.name, data.email], (err, results) => {
+    db.sql(query, [data.values], (err, results) => {
       // エラーが発生した場合、コールバックにエラーを渡し、`null` を返す
       if (err) return callback(err, null);
 
