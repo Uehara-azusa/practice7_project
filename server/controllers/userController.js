@@ -111,9 +111,21 @@ exports.loginUser = (req, res) => {
 };
 
 //ユーザーを検索する関数
-export.searchUser = (res, req) => {
-    // リクエストボディからクエリパラメータを取得
-    const {?query = name } = req.body;
+exports.searchUser = (res, req) => {
+    //クライアントが送信したクエリパラメータを取得
+    const query = req.query.query;
+
+    const num = /[a-zA-Z0-9@\-\._]/;
+
+    let textBox = document.getElementById("textBox");
+    let getText = textBox.value;
+    //query が空、または存在しない場合、400 ステータスコードとエラーメッセージを返す
+    //このバリデーションにより、誤ったリクエストや不正なアクセスからサーバーを守る役割がある
+      if (!query) {
+      return res.status(400).send({ error: '検索条件が必要です' });
+      } else if (!quary.includes(num)) {
+        return res.status(400).send({ error: '不正な入力です' });
+      }
 
     // データベースからユーザー名またはメールアドレスを元にユーザー情報を検索する
     User.search({ name, email }, (err, user) => {

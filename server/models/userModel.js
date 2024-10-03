@@ -77,24 +77,10 @@ const User = {
   //ユーザーを検索するメソッド
   // `data` オブジェクトには、ユーザー名、メールアドレスが含まれる
   // `callback` 関数は、SQLクエリが完了した後に実行される
-  search: (data) => {
+  search: (query) => {
     //ユーザー名またはメールアドレスが部分一致するデータを取得する SQL クエリ
     const sql = `SELECT * FROM users WHERE name LIKE ? OR email LIKE ?`;
     const values = [`%${query}%`, `%${query}%`];
-
-    //クライアントが送信したクエリパラメータを取得
-    const query = req.query.query;
-    const num = /[a-zA-Z0-9@-._]/;
-
-    let textBox = document.getElementById("textBox");
-    let getText = textBox.value;
-    //query が空、または存在しない場合、400 ステータスコードとエラーメッセージを返す
-    //このバリデーションにより、誤ったリクエストや不正なアクセスからサーバーを守る役割がある
-      if (!query) {
-      return res.status(400).send({ error: '検索条件が必要です' });
-      } else if (!quary.includes(num)) {
-        return res.status(400).send({ error: '検索条件が必要です' });
-      }
 
       // データベースに対してクエリを実行
       db.query(sql, values, (err, results) => {
