@@ -83,16 +83,12 @@ const User = {
     const values = [`%${query}%`, `%${query}%`];
 
     // データベースに対してクエリを実行
-    // `results` はクエリの実行結果（検索されたユーザーの配列）
-    db.sql(query, [data.values], (err, results) => {
-      // エラーが発生した場合、コールバックにエラーを渡し、`null` を返す
-      if (err) return callback(err, null);
+    db.query(sql, values, (err, results) => {
+      // エラーが発生した場合、500 ステータスコードを返す
+      if (err) return res.status(500).send(err);
 
-      // 検索結果が1件以上の場合、`results[0]`（最初のユーザーオブジェクト）をコールバックに渡す
-      if (results.length > 0) return callback(null, results[0]);
-
-      // ユーザーが見つからなかった場合、`null` をコールバックに渡す
-      return callback(null, null);
+      // クエリの実行結果は results に格納され、これを res.json(results) で JSON 形式に変換してクライアントに送信
+      res.json(results);
     });
   };
 
