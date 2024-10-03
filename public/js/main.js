@@ -116,8 +116,35 @@ function searchUser(e) {
       // 現在の検索結果表示をクリア（古いリストを消去）
       resultList.innerHTML = '';
 
+      //検索結果がない場合の条件を作成
+      if (searchUser.length === 0) {
+        // 検索結果を格納する `<li>` 要素を作成
+        const noResult = document.createElement('li');
+        // 該当する検索結果がない場合は、テキストを表示
+        noResult.textContent = '該当するユーザーが見つかりませんでした';
+        // 作成した `<li>` 要素を検索結果の表示要素に追加
+        resultList.appendChild(noResult);
+      } else {
+        // 検索結果をリストアイテムとして表示
+        searchUsers.forEach(user => {
+          // 検索結果を格納する `<li>` 要素を作成
+          const li = document.createElement('li');
+
+          // 検索結果の内容を設定
+          // ユーザー名、メールアドレスを表示
+          li.innerHTML = `${user.name} (${user.email})`;    /* ユーザー名とメールアドレスを表示 */
+
+          // 作成した `<li>` 要素を検索結果の表示要素に追加
+          resultList.appendChild(li);
+        });
+      };
     })
+    .catch(error => {
+        // ユーザー情報の取得中にエラーが発生した場合、エラーメッセージをコンソールに表示
+        console.error('Error:', error);
+    });
 }
+
 // ページが最初にロードされたときに `getUsers` 関数を実行し、初期状態でユーザーリストを表示する
 // ページ読み込み時にすべてのユーザー情報を取得して、表示を行う
 getUsers();
