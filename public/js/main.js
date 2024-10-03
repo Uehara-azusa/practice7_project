@@ -105,7 +105,7 @@ function searchUser(e) {
 
   // `fetch` を使用して、サーバーからユーザー情報を検索する
   // サーバーに `GET` リクエストを送信し、ユーザーリストを取得
-  const response = await fetch(`https://localhost:3000/api/users/search?query={encodeURIComponent(query)}`)
+  const response = await fetch(`https://localhost:3000/api/users/search?query=${encodeURIComponent(query)}`)
     .then(response => {
       // サーバーから取得したユーザーリストを `searchUsers` 変数に格納
       const searchUsers = response.data;
