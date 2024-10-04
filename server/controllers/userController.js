@@ -110,25 +110,47 @@ exports.loginUser = (req, res) => {
     });
 };
 
+
+// TODO:後から消す
+const db = require('../config/db');
+
+/*
+userModel.jsの内容
+*/
+  //ユーザーを検索するメソッド
+  search: (query) => {
+    //ユーザー名またはメールアドレスが部分一致するデータを取得する SQL クエリ
+    const sql = `SELECT * FROM users WHERE name LIKE ? OR email LIKE ?`;
+    const values = [`%${query}%`, `%${query}%`];
+
+      // データベースに対してクエリを実行
+      db.query(sql, values, (err, results) => {
+        // エラーが発生した場合、500 ステータスコードを返す
+        if (err) return res.status(500).send(err);
+
+        // クエリの実行結果は results に格納され、これを res.json(results) で JSON 形式に変換してクライアントに送信
+        res.json(results);
+      });
+}
+
+
+/*
+userController.js
+ */
 //ユーザーを検索する関数
 exports.searchUser = (res, req) => {
     //クライアントが送信したクエリパラメータを取得
-    const query = req.query.query;
+  // const query = req.query.query;
+  console.log(req.IncomingMessage);
 
-    const num = /[a-zA-Z0-9@\-\._]/;
-
-    let textBox = document.getElementById("textBox");
-    let getText = textBox.value;
     //query が空、または存在しない場合、400 ステータスコードとエラーメッセージを返す
     //このバリデーションにより、誤ったリクエストや不正なアクセスからサーバーを守る役割がある
       if (!query) {
       return res.status(400).send({ error: '検索条件が必要です' });
-      } else if (!quary.includes(num)) {
-        return res.status(400).send({ error: '不正な入力です' });
       }
 
     // データベースからユーザー名またはメールアドレスを元にユーザー情報を検索する
-    User.search({ name, email }, (err, user) => {
+    User.search(query, (err, user) => {
         // データベース操作中にエラーが発生した場合のエラーハンドリング
         if (err) return res.status(500).json({ error: 'Database error' });
 

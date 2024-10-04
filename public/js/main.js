@@ -2,9 +2,6 @@
 // フォームに入力された情報を取得し、新しいユーザーをサーバーに登録する
 document.getElementById('userForm').addEventListener('submit', addUser);
 
-//// フォームの送信イベントを監視し、`searchUser` 関数を実行する
-document.getElementById('searchForm').addEventListener('submit', searchUser);
-
 // ユーザーを追加するための関数
 // `e` はイベントオブジェクトを表し、フォーム送信時のデフォルト動作を防止するために使用する
 function addUser(e) {
@@ -93,19 +90,22 @@ function deleteUser(id) {
         });
 }
 
+//// ボタンのクリックを監視し、`searchUser` 関数を実行する
+searchButton.addEventListener('click', searchUser);
+
 //ユーザーを検索する関数
 // `e` はイベントオブジェクトを表し、フォーム送信時のデフォルト動作を防止するために使用する
-function searchUser(e) {
+async function searchUser(e) {
   // フォームのデフォルトの送信動作（ページのリロード）を防止
   e.preventDefault();
 
   // フォーム内の入力要素の値を取得
   // ユーザーの名前またはメールアドレスを取得し、変数に格納
-  const data = document.getElementById('searchInput').value;       // ユーザー名またはメールアドレス
-
+  const query = document.getElementById('searchInput').value;       // ユーザー名またはメールアドレス
+  console.log(query);
   // `fetch` を使用して、サーバーからユーザー情報を検索する
   // サーバーに `GET` リクエストを送信し、ユーザーリストを取得
-  const response = await fetch(`https://localhost:3000/api/users/search?query=${encodeURIComponent(query)}`)
+  const response = await fetch(`http://localhost:3000/api/users/search?query=${encodeURIComponent(query)}`)
     .then(response => {
       // サーバーから取得したユーザーリストを `searchUsers` 変数に格納
       const searchUsers = response.data;
@@ -117,7 +117,7 @@ function searchUser(e) {
       resultList.innerHTML = '';
 
       //検索結果がない場合の条件を作成
-      if (searchUser.length === 0) {
+      if (query.length === 0) {
         // 検索結果を格納する `<li>` 要素を作成
         const noResult = document.createElement('li');
         // 該当する検索結果がない場合は、テキストを表示

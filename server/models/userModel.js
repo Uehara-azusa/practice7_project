@@ -74,23 +74,21 @@ const User = {
     db.query(query, [id], callback);
   },
 
-  //ユーザーを検索するメソッド
-  // `data` オブジェクトには、ユーザー名、メールアドレスが含まれる
-  // `callback` 関数は、SQLクエリが完了した後に実行される
-  search: (query) => {
-    //ユーザー名またはメールアドレスが部分一致するデータを取得する SQL クエリ
-    const sql = `SELECT * FROM users WHERE name LIKE ? OR email LIKE ?`;
-    const values = [`%${query}%`, `%${query}%`];
+//   //ユーザーを検索するメソッド
+//   search: (query) => {
+//     //ユーザー名またはメールアドレスが部分一致するデータを取得する SQL クエリ
+//     const sql = `SELECT * FROM users WHERE name LIKE ? OR email LIKE ?`;
+//     const values = [`%${query}%`, `%${query}%`];
 
-      // データベースに対してクエリを実行
-      db.query(sql, values, (err, results) => {
-        // エラーが発生した場合、500 ステータスコードを返す
-        if (err) return res.status(500).send(err);
+//       // データベースに対してクエリを実行
+//       db.query(sql, values, (err, results) => {
+//         // エラーが発生した場合、500 ステータスコードを返す
+//         if (err) return res.status(500).send(err);
 
-        // クエリの実行結果は results に格納され、これを res.json(results) で JSON 形式に変換してクライアントに送信
-        res.json(results);
-      });
-  }
+//         // クエリの実行結果は results に格納され、これを res.json(results) で JSON 形式に変換してクライアントに送信
+//         res.json(results);
+//       });
+// }
 };
 
 // `User` オブジェクトをエクスポートし、他のファイルで使用できるようにする
