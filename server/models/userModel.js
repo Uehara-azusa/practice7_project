@@ -74,21 +74,24 @@ const User = {
     db.query(query, [id], callback);
   },
 
-//   //ユーザーを検索するメソッド
-//   search: (query) => {
-//     //ユーザー名またはメールアドレスが部分一致するデータを取得する SQL クエリ
-//     const sql = `SELECT * FROM users WHERE name LIKE ? OR email LIKE ?`;
-//     const values = [`%${query}%`, `%${query}%`];
+  //ユーザーを検索するメソッド
+  search: (query,callback) => {
+    //ユーザー名またはメールアドレスが部分一致するデータを取得する SQL クエリ
+    const sql = `SELECT * FROM users WHERE name LIKE ? OR email LIKE ?`;
+    const values = [`%${query}%`, `%${query}%`];
 
-//       // データベースに対してクエリを実行
-//       db.query(sql, values, (err, results) => {
-//         // エラーが発生した場合、500 ステータスコードを返す
-//         if (err) return res.status(500).send(err);
+      // データベースに対してクエリを実行
+      db.query(sql, values, (err, results) => {
+        // エラーが発生した場合、500 ステータスコードを返す
+        if (err) return callback(err,null);
 
-//         // クエリの実行結果は results に格納され、これを res.json(results) で JSON 形式に変換してクライアントに送信
-//         res.json(results);
-//       });
-// }
+        // クエリの実行結果は results に格納され、これをクライアントに送信
+        return callback(null, results);
+
+        // ユーザーが見つからなかった場合、`null` をコールバックに渡す
+        return callback(null, null);
+      });
+}
 };
 
 // `User` オブジェクトをエクスポートし、他のファイルで使用できるようにする

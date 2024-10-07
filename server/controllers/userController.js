@@ -110,38 +110,11 @@ exports.loginUser = (req, res) => {
     });
 };
 
-
-// TODO:後から消す
-const db = require('../config/db');
-
-/*
-userModel.jsの内容
-*/
-  //ユーザーを検索するメソッド
-  search: (query) => {
-    //ユーザー名またはメールアドレスが部分一致するデータを取得する SQL クエリ
-    const sql = `SELECT * FROM users WHERE name LIKE ? OR email LIKE ?`;
-    const values = [`%${query}%`, `%${query}%`];
-
-      // データベースに対してクエリを実行
-      db.query(sql, values, (err, results) => {
-        // エラーが発生した場合、500 ステータスコードを返す
-        if (err) return res.status(500).send(err);
-
-        // クエリの実行結果は results に格納され、これを res.json(results) で JSON 形式に変換してクライアントに送信
-        res.json(results);
-      });
-}
-
-
-/*
-userController.js
- */
 //ユーザーを検索する関数
-exports.searchUser = (res, req) => {
+exports.searchUser = (req, res) => {
     //クライアントが送信したクエリパラメータを取得
-  // const query = req.query.query;
-  console.log(req.IncomingMessage);
+  const query = req.query.query;
+  // console.log(query);
 
     //query が空、または存在しない場合、400 ステータスコードとエラーメッセージを返す
     //このバリデーションにより、誤ったリクエストや不正なアクセスからサーバーを守る役割がある
@@ -150,12 +123,12 @@ exports.searchUser = (res, req) => {
       }
 
     // データベースからユーザー名またはメールアドレスを元にユーザー情報を検索する
-    User.search(query, (err, user) => {
+  User.search(query, (err, users) => {
         // データベース操作中にエラーが発生した場合のエラーハンドリング
         if (err) return res.status(500).json({ error: 'Database error' });
 
         // 該当するユーザーが見つからない場合
-        if (!user) return res.status(404).json({ error: 'User not found' });
+        if (users.length==0) return res.status(404).json({ error: 'User not found' });
 
         // 正常にユーザーが取得できた場合、JSON形式でユーザー情報を返す
         res.status(200).json(users);
