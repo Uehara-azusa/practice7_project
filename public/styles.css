@@ -4,7 +4,6 @@ body {
   background-color: #f0f0f0;
   margin: 0;
   padding: 0;
-  display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh; /* 縦方向も中央揃え */
@@ -13,6 +12,17 @@ body {
 
 /* フォームとリストを横並びにするためのラッパー */
 .page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px; /* 要素間のスペースを追加 */
+  max-width: 1000px; /* 最大幅を制限して中央に表示 */
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.result-wrapper{
   display: flex;
   justify-content: center;
   align-items: flex-start;

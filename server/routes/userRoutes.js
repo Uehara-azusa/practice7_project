@@ -25,7 +25,7 @@ router.delete('/users/:id', userController.deleteUser);
 router.post('/login', userController.loginUser);
 
 //ユーザーを検索するためのルートを設定する (GETリクエスト)
-roter.get('/users/search', userController.searchUser);
+router.get('/users/search', userController.searchUser);
 
 // ルーターオブジェクトをエクスポートして、他のモジュールで使用できるようにする
 module.exports = router;

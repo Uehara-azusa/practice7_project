@@ -2,9 +2,6 @@
 // フォームに入力された情報を取得し、新しいユーザーをサーバーに登録する
 document.getElementById('userForm').addEventListener('submit', addUser);
 
-//// フォームの送信イベントを監視し、`searchUser` 関数を実行する
-document.getElementById('searchForm').addEventListener('submit', searchUser);
-
 // ユーザーを追加するための関数
 // `e` はイベントオブジェクトを表し、フォーム送信時のデフォルト動作を防止するために使用する
 function addUser(e) {
@@ -93,31 +90,69 @@ function deleteUser(id) {
         });
 }
 
+// ボタンのクリックを監視し、`searchUser` 関数を実行する
+searchButton.addEventListener('click', searchUser);
+
 //ユーザーを検索する関数
 // `e` はイベントオブジェクトを表し、フォーム送信時のデフォルト動作を防止するために使用する
-function searchUser(e) {
-  // フォームのデフォルトの送信動作（ページのリロード）を防止
-  e.preventDefault();
+async function searchUser() {
 
   // フォーム内の入力要素の値を取得
   // ユーザーの名前またはメールアドレスを取得し、変数に格納
-  const data = document.getElementById('searchInput').value;       // ユーザー名またはメールアドレス
+  const query = document.getElementById('searchInput').value;       // ユーザー名またはメールアドレス
+  // console.log(query);
 
-  // `fetch` を使用して、サーバーからユーザー情報を検索する
-  // サーバーに `GET` リクエストを送信し、ユーザーリストを取得
-  const response = await fetch(`https://localhost:3000/api/users/search?query={encodeURIComponent(query)}`)
-    .then(response => {
-      // サーバーから取得したユーザーリストを `searchUsers` 変数に格納
-      const searchUsers = response.data;
+  try {
+    // `fetch` を使用して、サーバーからユーザー情報を検索する
+    // サーバーに `GET` リクエストを送信し、ユーザーリストを取得
+    const response = await fetch(`http://localhost:3000/api/users/search?query=${encodeURIComponent(query)}`)
 
-      // HTML 内の検索結果表示用の要素を取得
-      const resultList = document.getElementById('resultList');
+    // サーバーから取得したユーザーリストを `searchUsers` 変数に格納
+    const searchUsers = await response.json();
+    console.log(searchUsers);
 
-      // 現在の検索結果表示をクリア（古いリストを消去）
-      resultList.innerHTML = '';
+    // HTML 内の検索結果表示用の要素を取得
+    const resultList = document.getElementById('resultList');
 
-    })
+    // 現在の検索結果表示をクリア（古いリストを消去）
+    resultList.innerHTML = '';
+
+    //検索結果の条件を作成
+    //検索結果がある場合
+    if (searchUsers.length > 0) {
+
+      // 検索結果をリストアイテムとして表示
+      searchUsers.forEach(user => {
+        // 検索結果を格納する `<li>` 要素を作成
+        const li = document.createElement('li');
+
+        // 検索結果の内容を設定
+        // ユーザー名、メールアドレスを表示
+        li.innerHTML = `${user.name} (${user.email})`;
+        // 作成した `<li>` 要素を検索結果の表示要素に追加
+        resultList.appendChild(li);
+      });
+    }//テキストボックスが空欄の場合
+    else if (query.length == 0) {
+        // 検索結果を格納する `<li>` 要素を作成
+        const li = document.createElement('li');
+        // テキストボックスが空欄の場合は、テキストを表示
+        li.textContent = 'ユーザー名またはメールアドレスを入力してください';
+        resultList.appendChild(li);
+    }//該当する検索結果がない場合
+    else {
+        // 検索結果を格納する `<li>` 要素を作成
+        const li = document.createElement('li');
+      // 該当する検索結果がない場合は、テキストを表示
+      li.textContent = '該当するユーザーが見つかりませんでした';
+      resultList.appendChild(li);
+    }
+  } catch (error) {
+      // ユーザー情報の取得中にエラーが発生した場合、エラーメッセージをコンソールに表示
+      console.error('Error:', error);
+    }
 }
+
 // ページが最初にロードされたときに `getUsers` 関数を実行し、初期状態でユーザーリストを表示する
 // ページ読み込み時にすべてのユーザー情報を取得して、表示を行う
 getUsers();

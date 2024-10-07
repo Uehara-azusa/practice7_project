@@ -111,17 +111,24 @@ exports.loginUser = (req, res) => {
 };
 
 //ユーザーを検索する関数
-export.searchUser = (res, req) => {
-    // リクエストボディからクエリパラメータを取得
-    const {?query = name } = req.body;
+exports.searchUser = (req, res) => {
+    //クライアントが送信したクエリパラメータを取得
+  const query = req.query.query;
+  // console.log(query);
+
+    //query が空、または存在しない場合、400 ステータスコードとエラーメッセージを返す
+    //このバリデーションにより、誤ったリクエストや不正なアクセスからサーバーを守る役割がある
+      if (!query) {
+      return res.status(400).send({ error: '検索条件が必要です' });
+      }
 
     // データベースからユーザー名またはメールアドレスを元にユーザー情報を検索する
-    User.search({ name, email }, (err, user) => {
+  User.search(query, (err, users) => {
         // データベース操作中にエラーが発生した場合のエラーハンドリング
         if (err) return res.status(500).json({ error: 'Database error' });
 
         // 該当するユーザーが見つからない場合
-        if (!user) return res.status(404).json({ error: 'User not found' });
+        if (users.length==0) return res.status(404).json({ error: 'User not found' });
 
         // 正常にユーザーが取得できた場合、JSON形式でユーザー情報を返す
         res.status(200).json(users);
